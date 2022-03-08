@@ -75,6 +75,9 @@ class NLP_Model:
         Unfreeze last N transformer heads in the model.
         Useful when limited in GPU memory        
         """
+        print(f"Number of attention heads:   {len(self.model.transformer.h)}")
+        print(f"Number of heads to unfreeze: {N}")
+
         for parameter in self.model.parameters():
             parameter.requires_grad = False
 

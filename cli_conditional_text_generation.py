@@ -79,7 +79,7 @@ def main(par_file):
 
     print('Setting the tokenizer and model')
     nlp_model = NLP_Model(model_alias, torch.half, cache_dir, SPECIAL_TOKENS)
-    model = nlp_model.model.to(device)
+    model = nlp_model.model.half().to(device)
     
     print(f"Total number of layers: {len(model.transformer.h)}")
     print(f"Un-freezing last {UNFREEZE_LAST_N}")
@@ -88,8 +88,8 @@ def main(par_file):
 
 
     # Making the DataSet instances
-    train_dataset = CTGDataset(train_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
-    test_dataset = CTGDataset(test_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
+    train_dataset = CTGDataset(train_data, nlp_model.tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
+    test_dataset = CTGDataset(test_data, nlp_model.tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
 
     # Training in a Jupyter Notebook
     #os.environ['MASTER_ADDR'] = 'localhost'
@@ -133,7 +133,7 @@ def main(par_file):
         args=training_args,    
         train_dataset=train_dataset,
         eval_dataset=test_dataset,
-        tokenizer=tokenizer
+        tokenizer=nlp_model.tokenizer
     )
     
     # Train
