@@ -77,21 +77,26 @@ class NLP_Model:
         """
         print(f"Number of attention heads:   {len(self.model.transformer.h)}")
         print(f"Number of heads to unfreeze: {N}")
+        
+        if len(self.model.transformer.h) > N:
 
-        for parameter in self.model.parameters():
-            parameter.requires_grad = False
+            for parameter in self.model.parameters():
+                parameter.requires_grad = False
 
-        for i, m in enumerate(self.model.transformer.h):        
-            if i+1 > len(self.model.transformer.h) - N:
-                for parameter in m.parameters():
-                    parameter.requires_grad = True 
+            for i, m in enumerate(self.model.transformer.h):        
+                if i+1 > len(self.model.transformer.h) - N:
+                    for parameter in m.parameters():
+                        parameter.requires_grad = True 
 
-        for parameter in self.model.transformer.ln_f.parameters():        
-            parameter.requires_grad = True
+            for parameter in self.model.transformer.ln_f.parameters():        
+                parameter.requires_grad = True
 
-        for parameter in self.model.lm_head.parameters():        
-            parameter.requires_grad = True
-    
+            for parameter in self.model.lm_head.parameters():        
+                parameter.requires_grad = True
+
+        else:
+            print("Number of attention heads in the model is smaller than requsted to unfreese. Skipping")
+        
     
     @staticmethod
     def gen_prompt(title: str, kws: str, special_toks: dict):
