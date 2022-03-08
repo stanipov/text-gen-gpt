@@ -1,118 +1,12 @@
-#!/home/sf/data/linux/py_env/transformers_ds/bin/python
+from utils import NLP_Model, CTGDataset, seed_everything
 
-# deepspeed --num_gpus=1 new2_cli_conditional_text_generation.py --deepspeed ds_config.json
-
-from sklearn.model_selection import train_test_split
 import os, json, random, pickle
 import numpy as np
 import datetime
-import argparse
 
-from transformers import AutoTokenizer, AutoConfig, AutoModelForPreTraining,TrainingArguments, Trainer
+from transformers import TrainingArguments, Trainer
 
 import torch
-from torch.utils.data import Dataset
-#######################################################################################################
-#
-# FUNCS
-#
-#######################################################################################################   
-class MyShittyDataset(Dataset):
-    
-    def __init__(self, data, tokenizer, SPECIAL_TOKENS, torch_device, max_len, randomize=True):
-        self.tokenizer = tokenizer
-        self.keywords = data['keywords']
-        self.data = data['text']
-        self.title = data['title']
-        self.spec_tok = SPECIAL_TOKENS
-        self.device = torch_device
-        self.randomize = randomize
-        self.max_len = max_len
-        
-    def __len__(self):
-        return len(self.data)
-    
-    @staticmethod
-    def join_keywords(keywords, randomize=True):
-    
-        if randomize:
-            # if the keywords are empty, then skip shuffling
-            # and return an empty line
-            try:
-                random.shuffle(keywords)
-            except Exception as e:
-                pass
-            
-        try:            
-            _kws = ', '.join(keywords)
-        except:
-            _kws = ''
-        return _kws
-    
-    def __getitem__(self, i):
-        kws = self.join_keywords(self.keywords[i], self.randomize)
-
-        tok_input = self.spec_tok['bos_token'] + self.title[i] + \
-        self.spec_tok['sep_token'] + kws + self.spec_tok['sep_token'] + \
-        self.data[i] + self.spec_tok['eos_token']
-        
-        encodings_dict = self.tokenizer(tok_input,                                   
-                                   truncation=True, 
-                                   max_length=self.max_len, 
-                                   padding="max_length")   
-        input_ids = encodings_dict['input_ids']
-        attention_mask = encodings_dict['attention_mask']
-        
-        return {'label': torch.tensor(input_ids),
-                'input_ids': torch.tensor(input_ids), 
-                'attention_mask': torch.tensor(attention_mask)}
-
-
-def seed_everything(seed):
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
-    
-    
-def get_tokenier(model, special_tokens=None):
-    tokenizer = AutoTokenizer.from_pretrained(model, return_token_type_ids=False) 
-    if special_tokens:
-        tokenizer.add_special_tokens(special_tokens)
-        print("Special tokens added")
-    return tokenizer
-
-
-def get_model(model, tokenizer, device, special_tokens=None, load_model_path=None):
-
-    #GPT2LMHeadModel
-    if special_tokens:
-        config = AutoConfig.from_pretrained(model, 
-                                            bos_token_id=tokenizer.bos_token_id,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            sep_token_id=tokenizer.sep_token_id,
-                                            pad_token_id=tokenizer.pad_token_id,
-                                            output_hidden_states=False, dtype=torch.half,)
-    else: 
-        config = AutoConfig.from_pretrained(model,                                     
-                                            pad_token_id=tokenizer.eos_token_id,
-                                            output_hidden_states=False, dtype=torch.half)    
-
-
-    model = AutoModelForPreTraining.from_pretrained(model, config=config)
-
-    if special_tokens:
-        #Special tokens added, model needs to be resized accordingly
-        model.resize_token_embeddings(len(tokenizer))
-
-    if load_model_path:
-        model.load_state_dict(torch.load(load_model_path))
-
-    model.half().to(device)
-    return model
 #######################################################################################################
 #
 # MAIN
@@ -140,9 +34,9 @@ def main(par_file):
         test_data = pickle.load(f)
 
 
-    MODEL           = params['model']
+    model_alias           = params['model']
     print('\n===================================================================')
-    print(f"Model: {MODEL}")
+    print(f"Model: {model_alias}")
     
     EPOCHS          = params['epochs']
     LR              = params['lr']
@@ -159,15 +53,23 @@ def main(par_file):
                         "unk_token": "<|UNK|>",                    
                         "pad_token": "<|PAD|>",
                         "sep_token": "<|SEP|>"}
-    MAXLEN = params['max_len']
+    MAXLEN          = params['max_len']
     print(f"Max length: {MAXLEN}")
 
     SEED   = params['seed']
-    seed_everything(SEED)
     device = torch.device('cuda') 
+    seed_everything(SEED)
+
+    cache_dir = params['cache_dir']
 
     dtstr = datetime.datetime.now().strftime('%Y-%m-%d') #%H-%M
-    model_name = f'{MODEL}-{UNFREEZE_LAST_N}l-{EPOCHS}ep_{dtstr}'
+    
+    if '/' in model_alias:
+        m_name = model_alias.split('/')[-1]
+    else:
+        m_name = model_alias
+        
+    model_name = f'{m_name}-{UNFREEZE_LAST_N}l-{EPOCHS}ep_{dtstr}'
     try:
         os.makedirs(os.path.join(os.getcwd(), model_name) )
     except:
@@ -175,45 +77,19 @@ def main(par_file):
     model_path = os.path.join(os.getcwd(), *(model_name, 'trained_model'))
     print(f"Model path:\n\t{model_path}")
 
-    print('Setting the tokenizer')
-    tokenizer = get_tokenier(MODEL, special_tokens=SPECIAL_TOKENS)
-    print('Done')
-    print('Setting the model')
+    print('Setting the tokenizer and model')
+    nlp_model = NLP_Model(model_alias, torch.half, cache_dir, SPECIAL_TOKENS)
+    model = nlp_model.model.to(device)
     
-    if params['model_preload'].lower() == 'none':
-        model = get_model(MODEL, tokenizer, device,
-                          special_tokens=SPECIAL_TOKENS,
-                         )
-    else:
-        model = get_model(MODEL, tokenizer, device,
-                          special_tokens=SPECIAL_TOKENS,
-                          load_model_path = params['model_preload'].lower(),
-                         )
-
     print(f"Total number of layers: {len(model.transformer.h)}")
     print(f"Un-freezing last {UNFREEZE_LAST_N}")
-    
-    # Unfreezing last N layers
-    for parameter in model.parameters():
-        parameter.requires_grad = False
-
-    for i, m in enumerate(model.transformer.h):        
-        #Only un-freeze the last n transformer blocks
-        if i+1 > len(model.transformer.h) - UNFREEZE_LAST_N:
-            for parameter in m.parameters():
-                parameter.requires_grad = True 
-
-    for parameter in model.transformer.ln_f.parameters():        
-        parameter.requires_grad = True
-
-    for parameter in model.lm_head.parameters():        
-        parameter.requires_grad = True
+    nlp_model.unfreeze_last_n(UNFREEZE_LAST_N)
     print('Done')
 
 
     # Making the DataSet instances
-    train_dataset = MyShittyDataset(train_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
-    test_dataset = MyShittyDataset(test_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
+    train_dataset = CTGDataset(train_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
+    test_dataset = CTGDataset(test_data, tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
 
     # Training in a Jupyter Notebook
     #os.environ['MASTER_ADDR'] = 'localhost'
@@ -272,20 +148,25 @@ def main(par_file):
 #
 #######################################################################################################    
 if __name__=='__main__':
-    # CLI paratemrs parser
-#    arg_parser = argparse.ArgumentParser(description='Train model')
-#    arg_parser.add_argument('-path',
-#                           metavar='path',
-#                           type=str,
-#                           help='Path to the parameters json')
-#    args = arg_parser.parse_args()
-#    param_fname = args.path
-    
-    param_fname = 'train_cfg_gpt2-l.json'
-    
     import sys
     
+    args = sys.argv
     max_args = 100
     cnt = 0
+    param_fname = None
     
-    main(param_fname)
+    if len (args) > 1:
+        while len(args) > 1 and cnt < max_args:
+            
+            item = args.pop(0)
+            if '-cfg' in item:
+                try:
+                    param_fname = args.pop(0)
+                except Exception as e:
+                    print(e)
+            cnt += 1
+
+    if param_fname:        
+        main(param_fname)
+    else:
+        print('No config is provided')

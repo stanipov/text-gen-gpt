@@ -1,6 +1,9 @@
 import torch, os, random
 import numpy as np
-from transformers import GPTNeoForCausalLM, GPT2LMHeadModel, GPT2Tokenizer, GPTNeoConfig, GPT2Config, GPTNeoModel, Trainer
+from transformers import GPTNeoForCausalLM, GPT2LMHeadModel, GPT2Tokenizer, GPTNeoConfig, GPT2Config, GPTNeoModel
+
+import torch
+from torch.utils.data import Dataset
 #######################################################################################################
 #
 # Language model
@@ -99,9 +102,9 @@ class NLP_Model:
 # Dataset
 #
 #######################################################################################################
-class MyShittyDataset(Dataset):
+class CTGDataset(Dataset):
     
-    def __init__(self, data, tokenizer, SPECIAL_TOKENS, torch_device, max_len, randomize=True):
+    def __init__(self, data: dict, tokenizer, SPECIAL_TOKENS: dict, torch_device: str, max_len: int, randomize=True):
         self.tokenizer = tokenizer
         self.keywords = data['keywords']
         self.data = data['text']
