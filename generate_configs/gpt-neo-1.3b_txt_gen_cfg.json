@@ -1,0 +1,38 @@
+{
+"config":{
+    "model_name_hf":"EleutherAI/gpt-neo-1.3B",
+    "model_path":"/home/sf/data/py_proj/text_generate/at6_gpt-neo-1.3B-32l-3ep_2022-03-08/trained_model/pytorch_model.bin",
+    "workdir":"/home/sf/data/py_proj/text_generate/",
+    "cache_dir":"/home/sf/data/py_proj/hf_models",
+    "output_fld":"generated_texts",
+    "output_core_name":"gpt-neo-32l-3ep",
+    "min_length":400,
+    "max_length":1024,
+    "top_k":"-1",
+    "top_p":"0.95",
+    "temperature":"1.2",
+    "repetition_penalty":"1.2",
+    "length_penalty":"1.2",
+    "num_return_sequences":"5",
+    "no_repeat_ngram_size":"5",
+    "seed":20220213
+    },
+
+"prompts":{
+    "0":{
+        "title":"Data Scientist - Recommendation systems",
+        "keywords": "Recommendation systems,Python,neural networks,develop algorithm,predict suctomer interest,TensorFlow,ML frameworks"
+    },
+    
+    "1":{
+        "title":"Computer Vision - Autonomous Drive",
+        "keywords": "Computer vision,Python,neural networks,develop algorithm,Objects Tracking Technique,kinematics,probability,geometry,autonomous vehicle,image recognition,AI/Machine Learning,image segmentation,PyTorch,ML frameworks"
+    },
+    
+    "2":{
+    "title": "Senior Software Engineer C++",
+    "keywords": "FPGA,emdebbed systems,system design,electronics,mechanics,Linux kernel experience,robotics,flying drones,building navigation,strong software development skills"
+    }
+}
+
+}
