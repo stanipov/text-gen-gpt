@@ -1,65 +1,14 @@
-#!/home/sf/data/linux/py_env/transformers_ds/bin/python
+from utils import NLP_Model, seed_everything
 
-import os, random, json
+import os, json, random, pickle
 import numpy as np
 import pandas as pd
-
-from transformers import AutoTokenizer, AutoConfig, AutoModelForPreTraining, BeamScorer, Trainer
-
-import torch
-from torch.utils.data import Dataset
+import datetime, torch
 #######################################################################################################
 #
 # FUNCS
 #
 ####################################################################################################### 
-def seed_everything(seed):
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
-       
-    
-def get_tokenier(model, special_tokens=None):
-    tokenizer = AutoTokenizer.from_pretrained(model, return_token_type_ids=False) 
-    if special_tokens:
-        tokenizer.add_special_tokens(special_tokens)
-        print("Special tokens added")
-    return tokenizer
-
-
-def get_model(model, tokenizer, device, special_tokens=None, load_model_path=None):
-
-    #GPT2LMHeadModel
-    if special_tokens:
-        config = AutoConfig.from_pretrained(model, 
-                                            bos_token_id=tokenizer.bos_token_id,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            sep_token_id=tokenizer.sep_token_id,
-                                            pad_token_id=tokenizer.pad_token_id,
-                                            output_hidden_states=False, dtype=torch.half,)
-    else: 
-        config = AutoConfig.from_pretrained(model,                                     
-                                            pad_token_id=tokenizer.eos_token_id,
-                                            output_hidden_states=False, dtype=torch.half)    
-
-
-    model = AutoModelForPreTraining.from_pretrained(model, config=config)
-
-    if special_tokens:
-        #Special tokens added, model needs to be resized accordingly
-        model.resize_token_embeddings(len(tokenizer))
-
-    if load_model_path:
-        model.load_state_dict(torch.load(load_model_path))
-
-    model.half().to(device)
-    return model
-
-
 def save_to_csv(src_fld: str, fld_texts: str, file_name_pattern: str, df: pd.DataFrame):
     """
     Saves the Pandas DF to a csv file. 
@@ -69,19 +18,11 @@ def save_to_csv(src_fld: str, fld_texts: str, file_name_pattern: str, df: pd.Dat
     try:
         os.makedirs(_dst_path)
     except Exception as e:
-        print(e)
+        print(f"\t{e}")
     _dst_f = os.path.join(_dst_path, file_name_pattern)
 
     with open(_dst_f, 'a') as f:
         df.to_csv(f, mode='a', header=f.tell()==0, sep = '\t', index = False)
-
-        
-def gen_prompt(title: str, kws: str, special_toks: dict):
-    """
-    Generates prompt from title and keywords
-    """
-    return special_toks['bos_token'] + title + \
-    special_toks['sep_token'] + kws + special_toks['sep_token']
 #######################################################################################################
 #
 # main()
@@ -100,15 +41,21 @@ def main(cfg_name):
     output_fld = config['config']['output_fld']
     output_core_name = config['config']['output_core_name']
     src_fld = config['config']['workdir']
+    cache_dir = config['config']['cache_dir']
+
+    device = config['config']['device']
+    if device == '':
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print(f'Device is not specified. Roll back to available device: {device}')
 
     top_k = float(config['config']['top_k'])
     if top_k < 0:
         top_k = None
-        
+
     top_p = float(config['config']['top_p'])
     if top_p < 0:
         top_p = None
-        
+
     temperature = float(config['config']['temperature'])
     if temperature < 0:
         temperature = None
@@ -133,42 +80,40 @@ def main(cfg_name):
     if seed < 0:
         seed = 42
 
-    SPECIAL_TOKENS  = { "bos_token": "<|BOS|>",
-                            "eos_token": "<|EOS|>",
-                            "unk_token": "<|UNK|>",                    
-                            "pad_token": "<|PAD|>",
-                            "sep_token": "<|SEP|>"}
+    SPECIAL_TOKENS  = {"bos_token": "<|BOS|>",
+                       "eos_token": "<|EOS|>",
+                       "unk_token": "<|UNK|>",                    
+                       "pad_token": "<|PAD|>",
+                       "sep_token": "<|SEP|>"}
                             
     # seed
     seed_everything(seed)
     device = torch.device('cuda') 
-
-    # Load model and the tokenizer
-    print('Loading tokenizer')
-    tokenizer = get_tokenier(model_name_hf, special_tokens=SPECIAL_TOKENS)
-    print('Done')
-
-    print(f'Loading model {model_name_hf}')
-    model = get_model(model_name_hf, tokenizer, device, 
-                      special_tokens=SPECIAL_TOKENS,
-                      load_model_path=model_path)
-    print('Done')
+    dtstr = datetime.datetime.now().strftime('%Y-%m-%d') #%H-%M
     
+    # set up the model
+    nlp_model = NLP_Model(model = model_name_hf, 
+                          dtype = torch.half, 
+                          cache_dir = cache_dir, 
+                          special_tokens = SPECIAL_TOKENS, 
+                          load_model_path = model_path)
+    model = nlp_model.model.half().to(device) 
+
     # Generation
     cnt = 0
     gen_txt = {}
     for key in config['prompts']:
-        
+
         title = config['prompts'][key]['title']
         kws = config['prompts'][key]['keywords']
-        prompt = gen_prompt(title, kws, SPECIAL_TOKENS)
+        prompt = NLP_Model.gen_prompt(title, kws, SPECIAL_TOKENS)
         model.eval();
-        
+
         print(f'Generating for\n\t"{title}"')
-        precursor = torch.tensor(tokenizer.encode(prompt)).unsqueeze(0)
-        device = torch.device("cuda")
+        precursor = torch.tensor(nlp_model.tokenizer.encode(prompt)).unsqueeze(0)
+        device = torch.device(device)
         precursor = precursor.to(device)
-        
+
         sample_outputs = model.generate(
                                     precursor, 
                                     do_sample=True,   
@@ -182,9 +127,9 @@ def main(cfg_name):
                                     no_repeat_ngram_size = no_repeat_ngram_size,
                                     num_return_sequences = num_return_sequences
                                     )
-        
+
         for i, sample_output in enumerate(sample_outputs):
-            text = tokenizer.decode(sample_output, skip_special_tokens=True)
+            text = nlp_model.tokenizer.decode(sample_output, skip_special_tokens=True)
             bare_txt = text.split(title)[-1][len(kws):]
             gen_txt[cnt] = {
                 'text' : bare_txt,
@@ -192,6 +137,7 @@ def main(cfg_name):
                 'kws'  : kws,        
             }
             cnt += 1
+
 
     # save
     print(f'Saving results in\n\t{os.path.join(src_fld, output_fld)}')
