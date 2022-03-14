@@ -132,13 +132,13 @@ def main(param_fname):
 # CLI paratemrs parser
 arg_parser = argparse.ArgumentParser(description='Split the prepared data for traning and limit token size')
 
-arg_parser.add_argument('-path',
-                       metavar='path',
+arg_parser.add_argument('-cfg',
+                       metavar='cfg',
                        type=str,
                        help='Path to the parameters json')
 
 args = arg_parser.parse_args()
 
-param_fname = args.path
+param_fname = args.cfg
 if __name__=='__main__':
     main(param_fname)
