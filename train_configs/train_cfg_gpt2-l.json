@@ -1,0 +1,18 @@
+{
+"train":"/home/sf/data/py_proj/text_generate/input_data/train_128_800.pkl",
+"test":"/home/sf/data/py_proj/text_generate/input_data/test_128_800.pkl",
+"cache_dir":"/home/sf/data/py_proj/hf_models",
+"model_preload":"none",
+"model":"gpt2-large",
+"unfreeze_last_n": 36,
+"max_len":830,
+"seed": 20220213,
+"epochs": 4,
+"lr":"1e-4",
+"eps":"5e-4",
+"warmup":"1e2",
+"train_batch_size":1,
+"batch_update":1,
+"ds_config":"/home/sf/data/py_proj/text_generate/DS_configs/ds3_config_cpu.json",
+"__comments": "gpt2, gpt2-medium, gpt2-large, gpt2-xl"
+}
