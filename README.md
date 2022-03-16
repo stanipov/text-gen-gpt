@@ -20,5 +20,16 @@ The tokenizer is set to pad any input sequence that is shorter than **max_len** 
  **max_len** should be chosen larger than the maximal number of tokens in the training data to accommodate most of text. Since majority of the text contain fairly common (sometimes even looking similarly) endings on employer being equal opportunity, non-discriminative, etc, the generalization of the tuned model should not be seriously affected. In the same time it allows to feed larger texts into the model that often contain interesting texts.
 
 #### Training
-The fin tuning is implemented in **cli_conditional_text_generation.py -cfg config_name** script. The fine tuning parameters are written in a .json file. The real training configs and DeepSpped (ds) configs are locate in **generate_configs** and **DS_configs** respectively. 
+The fin tuning is implemented in **cli_training.py -cfg config_name** script. The fine tuning parameters are written in a .json file. The real training configs and DeepSpped (ds) configs are locate in **generate_configs** and **DS_configs** respectively. 
 Refer to **NLP_model class** of the **utils.py** file for technical implementations. 
+
+For training in a Jupyter Notebook on a local machine, use these parameters:
+  os.environ['MASTER_ADDR'] = 'localhost'
+  os.environ['MASTER_PORT'] = '9994' # modify if RuntimeError: Address already in use
+  os.environ['RANK'] = "0"
+  os.environ['LOCAL_RANK'] = "0"
+  os.environ['WORLD_SIZE'] = "1" 
+  os.environ['TOKENIZERS_PARALLELISM'] = 'true'
+  os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+  os.environ['PYTORCH_NO_CUDA_MEMORY_CACHING'] = "1"
+  os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:10'
