@@ -1,0 +1,9 @@
+{
+"src_folder": "/home/sf/data/py_proj/datasets/job_ads/single_json",
+"file_name": "key-words_single.pkl",
+"max_seq_len": 600,
+"min_seq_len": 128,
+"seed": 20220213,
+"train_val":"0.2",
+"save_folder":"/home/sf/data/py_proj/text_generate/input_data/"
+}
