@@ -24,6 +24,7 @@ The fin tuning is implemented in **cli_training.py -cfg config_name** script. Th
 Refer to **NLP_model class** of the **utils.py** file for technical implementations. 
 
 For training in a Jupyter Notebook on a local machine, use these parameters:
+```python
   os.environ['MASTER_ADDR'] = 'localhost'
   os.environ['MASTER_PORT'] = '9994' # modify if RuntimeError: Address already in use
   os.environ['RANK'] = "0"
@@ -33,3 +34,4 @@ For training in a Jupyter Notebook on a local machine, use these parameters:
   os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
   os.environ['PYTORCH_NO_CUDA_MEMORY_CACHING'] = "1"
   os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:10'
+```
