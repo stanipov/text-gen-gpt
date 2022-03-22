@@ -2,7 +2,7 @@
     "fp16": {
         "enabled": "auto",
         "loss_scale": 0,
-        "loss_scale_window": 1000,
+        "loss_scale_window": 100,
         "initial_scale_power": 16,
         "hysteresis": 2,
         "min_loss_scale": 1
@@ -37,15 +37,15 @@
             "device": "cpu",
             "pin_memory": true
         },
-	    "allgather_bucket_size": 1e7,
+	    "allgather_bucket_size": 5e7,
 	    "overlap_comm": true,
 	    "reduce_scatter":true,
-	    "reduce_bucket_size": 1e7,
+	    "reduce_bucket_size": 5e7,
 	    "contiguous_gradients": true,
-        "sub_group_size": 1e7,
+        "sub_group_size": 5e7,
 	    "round_robin_gradients": true,
-	    "stage3_max_live_parameters": 1e7,
-	    "stage3_prefetch_bucket_size": 1e7,
+	    "stage3_max_live_parameters": 5e7,
+	    "stage3_prefetch_bucket_size": 5e7,
 	    "stage3_gather_fp16_weights_on_model_save": true
     },
 
