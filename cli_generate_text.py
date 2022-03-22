@@ -29,6 +29,8 @@ def save_to_csv(src_fld: str, fld_texts: str, file_name_pattern: str, df: pd.Dat
 #
 #######################################################################################################  
 def main(cfg_name):
+    print('\n******************* STARTING THE SCRIPT *******************')
+    print('\nPreparing the model')
     # read cfg
     with open(cfg_name,'rb') as f:
         config = json.load(f)
@@ -97,9 +99,11 @@ def main(cfg_name):
                           cache_dir = cache_dir, 
                           special_tokens = SPECIAL_TOKENS, 
                           load_model_path = model_path)
-    model = nlp_model.model.half().to(device) 
+    print(f'Converting to fp16 and sending to {device}')
+    model = nlp_model.model.half().to(device)
 
     # Generation
+    print(f"\n--------------------------\nGeneration for {config['prompts']} prompts\n--------------------------\n")
     cnt = 0
     gen_txt = {}
     for key in config['prompts']:
@@ -142,6 +146,10 @@ def main(cfg_name):
     # save
     print(f'Saving results in\n\t{os.path.join(src_fld, output_fld)}')
     df_get_txt = pd.DataFrame(gen_txt).T
+   
+    if '/' in model_name_hf:
+        model_name_hf = model_name_hf.replace('/','-')
+        
     if output_core_name != '':
         file_name_pattern = f"{model_name_hf}_sampling_{output_core_name}.csv"
     else:
@@ -165,5 +173,4 @@ if __name__ == '__main__':
                            help='config file json')
     args = arg_parser.parse_args()
     param_fname = args.cfg
-    print('******************* Starting generation *******************')
     main(param_fname)
