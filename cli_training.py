@@ -7,6 +7,20 @@ import datetime
 from transformers import TrainingArguments, Trainer
 
 import torch
+
+
+
+def convert_to_type(param_str, def_val, def_val_type):
+    """
+    Converts a value to a designated type (e.g. int of float)
+    and prints error if fails and returns default
+    """
+    try:
+        param_str = def_val_type(weight_decay)
+    except Exception as e:
+        print(e)
+        param_str = def_val
+    return param_str
 #######################################################################################################
 #
 # MAIN
@@ -54,15 +68,17 @@ def main(par_file):
                         "pad_token": "<|PAD|>",
                         "sep_token": "<|SEP|>"}
     MAXLEN          = params['max_len']
-    print(f"Max length: {MAXLEN}")
+    SEED            = params['seed']
+    device          = torch.device('cuda') 
 
-    SEED   = params['seed']
-    device = torch.device('cuda') 
+    print(f"Max length: {MAXLEN}")
     seed_everything(SEED)
 
-    cache_dir = params['cache_dir']
+    cache_dir = os.path.join(params['cache_dir'], model_alias)
+    
+    model_preload = params.pop('model_preload', None)
 
-    dtstr = datetime.datetime.now().strftime('%Y-%m-%d') #%H-%M
+    dtstr = datetime.datetime.now().strftime('%Y-%m-%d') 
     
     if '/' in model_alias:
         m_name = model_alias.split('/')[-1]
@@ -78,30 +94,18 @@ def main(par_file):
     print(f"Model path:\n\t{model_path}")
 
     print('Setting the tokenizer and model')
-    nlp_model = NLP_Model(model_alias, torch.half, cache_dir, SPECIAL_TOKENS)
+    nlp_model = NLP_Model(model_alias, torch.half, cache_dir, SPECIAL_TOKENS, model_preload)
     model = nlp_model.model.half().to(device)
     
     print(f"Total number of layers: {len(model.transformer.h)}")
     print(f"Un-freezing last {UNFREEZE_LAST_N}")
     nlp_model.unfreeze_last_n(UNFREEZE_LAST_N)
     print('Done')
-
-
+    
     # Making the DataSet instances
     train_dataset = CTGDataset(train_data, nlp_model.tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
     test_dataset = CTGDataset(test_data, nlp_model.tokenizer, SPECIAL_TOKENS, device, MAXLEN, randomize=True)
 
-    # Training in a Jupyter Notebook
-    #os.environ['MASTER_ADDR'] = 'localhost'
-    #os.environ['MASTER_PORT'] = '9994' # modify if RuntimeError: Address already in use
-    #os.environ['RANK'] = "0"
-    #os.environ['LOCAL_RANK'] = "0"
-    #os.environ['WORLD_SIZE'] = "1" #deepspeed --num_gpus=1 new2_cli_conditional_text_generation.py --deepspeed ds_config.json
-    #os.environ['TOKENIZERS_PARALLELISM'] = 'true'
-    #os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-    #os.environ['PYTORCH_NO_CUDA_MEMORY_CACHING'] = "1"
-    #os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:10'
-    
     ds_config = params['ds_config']
     output_dir = os.path.join(os.getcwd(), model_name)
     log_dir = os.path.join(os.getcwd(), 'LOGS')
@@ -110,27 +114,43 @@ def main(par_file):
         os.makedirs(log_dir)
     except Exception as e:
         print(e)
-     
+          
+    save_total_chkpts = params.pop('max_checkpts_num', None)
+    if save_total_chkpts:
+        save_total_chkpts = convert_to_type(save_total_chkpts, 1, int)
+
+    weight_decay = params.pop('weight_decay', 0.01)
+    if weight_decay:
+        weight_decay = convert_to_type(weight_decay, 0.01, float)
+
+    fp16 = params.pop('fp16_train', True)
+    if fp16:
+        fp16 = convert_to_type(fp16, True, bool)    
+
+    fp16_full_eval = params.pop('fp16_full_eval', False)
+    if fp16_full_eval:
+        fp16_full_eval = convert_to_type(fp16_full_eval, False, bool)
+         
     # Hugging Face trainer arguments
     training_args = TrainingArguments(
-        output_dir=output_dir,
-        num_train_epochs=EPOCHS,
-        per_device_train_batch_size=TRAIN_BATCHSIZE,
-        per_device_eval_batch_size=TRAIN_BATCHSIZE,
-        gradient_accumulation_steps=BATCH_UPDATE,
-        evaluation_strategy="epoch",
-        fp16=True,
-        fp16_full_eval = False,
-        warmup_steps=WARMUP_STEPS,    
-        learning_rate=LR,
-        adam_epsilon=EPS,
-        weight_decay=0.01,        
-        save_total_limit=1,
-        save_strategy = 'epoch',
-        load_best_model_at_end=False,     
-        #logging_dir = log_dir + '/log.txt',
-        logging_strategy = 'steps',
-        deepspeed=ds_config
+        output_dir                  = output_dir,
+        num_train_epochs            = EPOCHS,
+        per_device_train_batch_size = TRAIN_BATCHSIZE,
+        per_device_eval_batch_size  = TRAIN_BATCHSIZE,
+        gradient_accumulation_steps = BATCH_UPDATE,
+        evaluation_strategy         = "epoch",
+        fp16                        = fp16,
+        fp16_full_eval              = fp16_full_eval,
+        warmup_steps                = WARMUP_STEPS,    
+        learning_rate               = LR,
+        adam_epsilon                = EPS,
+        weight_decay                = weight_decay,        
+        save_total_limit            = save_total_chkpts,
+        save_strategy               = 'epoch',
+        load_best_model_at_end      = False,     
+        logging_dir                 = log_dir + '/log.txt',
+        logging_strategy            = 'steps',
+        deepspeed                   = ds_config
     )
 
     # Instantiate the Trainer
