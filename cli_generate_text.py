@@ -41,7 +41,7 @@ def main(cfg_name):
     output_fld = config['config']['output_fld']
     output_core_name = config['config']['output_core_name']
     src_fld = config['config']['workdir']
-    cache_dir = config['config']['cache_dir']
+    cache_dir = os.path.join(config['config']['cache_dir'], model_name_hf)
 
     device = config['config']['device']
     if device == '':
