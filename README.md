@@ -2,7 +2,7 @@
 
 Generated with GPT Neo 1.3B
 
-```
+
 >Data Scientist - Recommendation systems
 >Review our client!
 >
