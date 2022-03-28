@@ -67,7 +67,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 Once a model is fine-tuned, it can generate text from a prompt. The prompt is formed from a job title (e.g. *Data Scientist - Recommendation systems*) and keywords separated by comma. The actual generation is implemented in ```cli_generate_text.py -cfg config_name```. The sample configs are located in **generate_configs/**. Some sample texts can be found in **generated_texts/**
 
 ### Results
-Let’s compare results from GPT Neo (1.3B) and GPT2-Large for prompts from topics that were not present in the training datasets. The texts below were generated from these inputs:
+Let’s compare results from GPT Neo (1.3B) and GPT2-Large for prompts on topics that were not present in the training datasets. The texts below were generated from these inputs:
 - *Title*: Natural Language Processing (NLP)
 - *Key words*: NLP,transformers,BERT,GPT,Python,customer satisfaction,analyze customer feedback,topic modeling,working with real-world text corpora
 
