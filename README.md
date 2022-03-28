@@ -67,71 +67,73 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 Once a model is fine-tuned, it can generate text from a prompt. The prompt is formed from a job title (e.g. *Data Scientist - Recommendation systems*) and keywords separated by comma. The actual generation is implemented in ```cli_generate_text.py -cfg config_name```. The sample configs are located in **generate_configs/**. Some sample texts can be found in **generated_texts/**
 
 ### Results
-Let’s compare results from GPT Neo (1.3B) and GPT2-Large. The texts below were generated from these inputs:
+Let’s compare results from GPT Neo (1.3B) and GPT2-Large for prompts from topics that were not present in the training datasets. The texts below were generated from these inputs:
 - *Title*: Natural Language Processing (NLP)
 - *Key words*: NLP,transformers,BERT,GPT,Python,customer satisfaction,analyze customer feedback,topic modeling,working with real-world text corpora
 
 
 **GPT Neo**
-```
-Description
-We are working with real world text that will enable smart search. Our goal is to make Amazon search useful for all its customers not only Amazon’s own ESLP initiatives focused on Smart Order Experience but also enabling future orders on any other major e-Commerce platforms by including Natural Language Understanding (NLP). At the same time we want them to be an amazing partner helping us build and run high performance ML systems and service for AWS in order to be ready for our next step of transform them from a research prototype to production. This requires that we continue inventing on behalf team members as well as building up new systems along the way with cutting-edge technology, state of art artificial intelligence, NLP methodologies at top tech companies. We create scalable and dynamic NLP solutions, and implement end-to-end ML solutions into these systems as needed, ensuring the appropriate level of accuracy when deploying trained models over live production systems.
-Our researchers and engineers love coming together across teams. They come from top universities such as Stanford University in EHS and EEFT, CUpertino and NYU Langone in HEP, Statute labs in NJM, NIPS Labs in MDL, USC IAF and TechCrunch in Singapore, etc.
-The ideal candidate's favorite words are learning, innovation, scale and agility. You will leverage your existing technical expertise and bring prototypes from previous open-source efforts into our systems through contributions. In addition, you will leverage previous NLP related success experiences within successful BERT like JelinekB, TalkPort, DNNube or others, in order to transfer these techniques into current SOH and natural language understanders space as business priorities change and evolve.
+
+>Description
+>We are working with real world text that will enable smart search. Our goal is to make Amazon search useful for all its customers not only Amazon’s own ESLP initiatives focused on Smart Order Experience but also enabling future orders on any other major e-Commerce platforms by including Natural Language Understanding (NLP). At the same time we want them to be an amazing partner helping us build and run high performance ML systems and service for AWS in order to be ready for our next step of transform them from a research prototype to production. This requires that we continue inventing on behalf team members as well as building up new systems along the way with cutting-edge technology, state of art artificial intelligence, NLP methodologies at top tech companies. We create scalable and dynamic NLP solutions, and implement end-to-end ML solutions into these systems as needed, ensuring the appropriate level of accuracy when deploying trained models over live production systems.
+>
+>Our researchers and engineers love coming together across teams. They come from top universities such as Stanford University in EHS and EEFT, CUpertino and NYU Langone in HEP, Statute labs in NJM, NIPS Labs in MDL, USC IAF and TechCrunch in Singapore, etc.
+>
+>The ideal candidate's favorite words are learning, innovation, scale and agility. You will leverage your existing technical expertise and bring prototypes from previous open-source efforts into our systems through contributions. In addition, you will leverage previous NLP related success experiences within successful BERT like JelinekB, TalkPort, DNNube or others, in order to transfer these techniques into current SOH and natural language understanders space as business priorities change and evolve.
+>
+>
+>Basic Qualifications
+>Experience programming in Java, C++, Python or similar language
+>2+ years professional software development experience where you have worked on some kind of project end
+>Strong problem solving ability, and an ability to effectively articulate and communicate this complex information to non-technical audiences
+>PhD/SAS in Computer science (or a related discipline, if you had an example in your schoolwork) is strongly preferred
+>Significant experience creating and using custom modeling techniques on large datasets and applied problems
+>Demonstrated leadership abilities in developing and leading technical discussions with senior colleagues throughout various dimensions.is expected to contribute high quality results to all aspects of modeling – not just for their assigned projects, though
+>
+>
+>Preferred Qualifications
+>Background in computational linguistics
+>Background in topic modeling
+>Knowledge in core areas of statistics: hypothesis testing, sampling & collecting, analyzing distributions, multi-variance analysis, etc. is definitely a plus
+>Expertise with NLP technologies: tokenization, NLU tasks, classification, sentiment analysis tasks, question answering, textual similarity, transformer models, etc.
+>A strong track record of thoughtful leadership in small, collaborative teams
 
 
-Basic Qualifications
-Experience programming in Java, C++, Python or similar language
-2+ years professional software development experience where you have worked on some kind of project end
-Strong problem solving ability, and an ability to effectively articulate and communicate this complex information to non-technical audiences
-PhD/SAS in Computer science (or a related discipline, if you had an example in your schoolwork) is strongly preferred
-Significant experience creating and using custom modeling techniques on large datasets and applied problems
-Demonstrated leadership abilities in developing and leading technical discussions with senior colleagues throughout various dimensions.is expected to contribute high quality results to all aspects of modeling – not just for their assigned projects, though
+>Company - Amazon.com Services LLC
+>Job ID: A115789
 
-
-Preferred Qualifications
-Background in computational linguistics
-Background in topic modeling
-Knowledge in core areas of statistics: hypothesis testing, sampling & collecting, analyzing distributions, multi-variance analysis, etc. is definitely a plus
-Expertise with NLP technologies: tokenization, NLU tasks, classification, sentiment analysis tasks, question answering, textual similarity, transformer models, etc.
-A strong track record of thoughtful leadership in small, collaborative teams
-
-
-Company - Amazon.com Services LLC
-Job ID: A115789
-```
 
 **GPT2 large**
-```
-Natural Language Processing (NLP)
-The Opportunity
- 
-We are looking for a motivated Principal Data/Speech Engineer to join us in Atlanta. In this role, you’ll have the unique and rewarding opportunity of working on natural language technology that impacts billions of customers daily.
 
-This is an outstanding hire for someone who is passionate about machine learning, NLP and wants to innovate the way we research & deploy large scale services using ML algorithms. It also includes some cross discipline design work as well.
-  You'll be working from our office across the street while having remote hours Monday thru Saturday. You will support a very fast growing product and deliverables team utilizing cutting edge Natural Language processing technologies using latest GPT architecture. At times in the evenings we might even sit together outside!
+>Natural Language Processing (NLP)
+>The Opportunity
+> 
+>We are looking for a motivated Principal Data/Speech Engineer to join us in Atlanta. In this role, you’ll have the unique and rewarding opportunity of working on natural language technology that impacts billions of customers daily.
+>
+>This is an outstanding hire for someone who is passionate about machine learning, NLP and wants to innovate the way we research & deploy large scale services using ML algorithms. It also includes some cross discipline design work as well.
+>  You'll be working from our office across the street while having remote hours Monday thru Saturday. You will support a very fast growing product and deliverables team utilizing cutting edge Natural Language processing technologies using latest GPT architecture. At times in the evenings we might even sit together outside!
+>
+>What We're Looking For
+>You hold 4+ years in computer science or related field
+>Experience delivering services leveraging Natural Language technology
+>Excellent data ingestion experience
+>Knowledge of Deep Learning concepts including topic modeling, model inference, transformer models etc., such as: transformer learning, word embeddings or sentiment analysis
+>Ability to multi task, communicate clearly, extract meaning out of ambiguous situations, work independently with little supervision
+>BS / MS preferred
+>
+>Our Customers
+>People in retail, automotive, hospitality and financial services use our products every day
+>Who They Serve
+>CVS.com, CVS Health, Aetna, American Express, Bayshore Financial Services, BB&T Mutual Funds, Barclays Capital Markets, Centura Federal Savings Bank, CenterCity Financial Group, Credit Unions International Inc, Delta Airlines Corporation, eBay LLC, Expedia Americas - Our largest online destination for travel, shopping, dining experiences, lodging and more
+>Customer Satisfaction - 93% Customer Satisfaction!
+>
+>Employment-Type Summary
+>Participates in R&D projects in close collaboration with management and other engineering teams throughout GE Digital Services unit
+>Analyzes problem cases to provide solution recommendations in non technical domains and translate those solutions into technology concepts to solve real world problems
+>Develops software platforms on top of the GE GPT platform, typically working with production services
+>Manages expectations in terms of timelines, responsibilities and costs in meetings
+>
+>Qualifications
+>Currently working on Natural Language Understanding, document indexing or summarization based algorithms or other applications requiring high level NLP systems development
+>Bachelors and/or PhD in Computer Science with focus in the application domain
 
-What We're Looking For
-You hold 4+ years in computer science or related field
-Experience delivering services leveraging Natural Language technology
-Excellent data ingestion experience
-Knowledge of Deep Learning concepts including topic modeling, model inference, transformer models etc., such as: transformer learning, word embeddings or sentiment analysis
-Ability to multi task, communicate clearly, extract meaning out of ambiguous situations, work independently with little supervision
-BS / MS preferred
-
-Our Customers
-People in retail, automotive, hospitality and financial services use our products every day
-Who They Serve
-CVS.com, CVS Health, Aetna, American Express, Bayshore Financial Services, BB&T Mutual Funds, Barclays Capital Markets, Centura Federal Savings Bank, CenterCity Financial Group, Credit Unions International Inc, Delta Airlines Corporation, eBay LLC, Expedia Americas - Our largest online destination for travel, shopping, dining experiences, lodging and more
-Customer Satisfaction - 93% Customer Satisfaction!
-
-Employment-Type Summary
-Participates in R&D projects in close collaboration with management and other engineering teams throughout GE Digital Services unit
-Analyzes problem cases to provide solution recommendations in non technical domains and translate those solutions into technology concepts to solve real world problems
-Develops software platforms on top of the GE GPT platform, typically working with production services
-Manages expectations in terms of timelines, responsibilities and costs in meetings
-
-Qualifications
-Currently working on Natural Language Understanding, document indexing or summarization based algorithms or other applications requiring high level NLP systems development
-Bachelors and/or PhD in Computer Science with focus in the application domain
-```
