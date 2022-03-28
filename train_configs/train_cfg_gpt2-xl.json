@@ -7,7 +7,7 @@
 "unfreeze_last_n": 36,
 "max_len":630,
 "seed": 20220213,
-"epochs": 4,
+"epochs": 2,
 "lr":"1e-4",
 "weight_decay": 0.01,
 "fp16_train": true,
