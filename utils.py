@@ -66,6 +66,7 @@ class NLP_Model:
         
         # load pretrained model from file
         if load_model_path:
+            print(f'Loading model state from {load_model_path}')
             self.model.load_state_dict(torch.load(load_model_path))
         print('Done')
         
