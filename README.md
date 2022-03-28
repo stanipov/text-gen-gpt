@@ -3,32 +3,31 @@
 Generated with GPT Neo 1.3B
 
 ```
-Data Scientist - Recommendation systems
-Review our client!
+>Data Scientist - Recommendation systems
+>Review our client!
+>
+>This is the perfect opportunity for an extraordinary individual to make an impact. Your technical expertise will be put into the hands of millions of users on a daily basis.
+>
+>The Requirements:  
+>
+>Experience building practical recommendation and machine learning systems
+>Strong problem solving skills with experience crafting solutions, performing manual data reviews, and using statistics to improve models.
+>Practical exposure to state of the art deep neural networks (Neural Networks) and related technologies
+>Well versed in modern recommender engines and their architecture 
+>You have designed software applications involving on-device processing / prediction
+>Preferred but not required TensorFlow or PyTorch
+>Your problem space may be complex
+>You enjoy getting your solutions out there on NNs. You get feedback from expert colleagues who are experts.
+>
+>Day-to-Day Relevance
+>
+>The Data Science team are looking for a recommendations-oriented Senior Software Engineer in Datacenters, Analytics & Reporting for Recommendations as well as ML / Python Developers. In this role you’ll drive real time model generation/inference based reporting, dashboards and analysis pertaining to Recommender Systems such as Nearest Neighbor Search. This is the perfect opportunity to make those recommendations happen via dataset based analytics – ideal candidates love precision medicine aspect of problems they study (ie. Anandabound).
+>
+>Responsibilities:
+>Be ready to deploy simple machine learning systems.
+>Analyze large volumes of text at scale; work fast and accurate by drawing on existing datasets and using advanced modeling algorithms like Long Short Term Memory for classification and Regression.  
+>Collaborate with data scientists and engineers from datacomputing teams to design pipeline of analytical models and develop supporting tools like code management processes optimizing code runtimes etc.
 
-This is the perfect opportunity for an extraordinary individual to make an impact. Your technical expertise will be put into the hands of millions of users on a daily basis.
-
-The Requirements:  
-
-Experience building practical recommendation and machine learning systems
-Strong problem solving skills with experience crafting solutions, performing manual data reviews, and using statistics to improve models.
-Practical exposure to state of the art deep neural networks (Neural Networks) and related technologies
-Well versed in modern recommender engines and their architecture 
-You have designed software applications involving on-device processing / prediction
-Preferred but not required TensorFlow or PyTorch
-Your problem space may be complex
-You enjoy getting your solutions out there on NNs. You get feedback from expert colleagues who are experts.
-
-
-Day-to-Day Relevance
-
-The Data Science team are looking for a recommendations-oriented Senior Software Engineer in Datacenters, Analytics & Reporting for Recommendations as well as ML / Python Developers. In this role you’ll drive real time model generation/inference based reporting, dashboards and analysis pertaining to Recommender Systems such as Nearest Neighbor Search. This is the perfect opportunity to make those recommendations happen via dataset based analytics – ideal candidates love precision medicine aspect of problems they study (ie. Anandabound).
-
-Responsibilities:
-Be ready to deploy simple machine learning systems.
-Analyze large volumes of text at scale; work fast and accurate by drawing on existing datasets and using advanced modeling algorithms like Long Short Term Memory for classification and Regression.  
-Collaborate with data scientists and engineers from datacomputing teams to design pipeline of analytical models and develop supporting tools like code management processes optimizing code runtimes etc.
-```
 
 ## Intro
 It's known that GPT2-like models (GPT2 or GPT Neo) are capable of generation of texts from a string prompt. This method has no means of controlling content of the generated text. Addition of key- and key-phrases extracted from the text allows better control of the generated text.
