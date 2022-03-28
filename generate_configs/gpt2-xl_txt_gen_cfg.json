@@ -1,11 +1,11 @@
 {
 "config":{
-    "model_name_hf":"EleutherAI/gpt-neo-1.3B",
-    "model_path":"/home/sf/data/py_proj/text_generate/at8_gpt-neo-1.3B-32l-2ep_2022-03-21/trained_model/pytorch_model.bin",
+    "model_name_hf":"gpt2-xl",
+    "model_path":"/home/sf/data/py_proj/text_generate/at9_gpt2-xl-36l-4ep_2022-03-18/checkpoint-7314/fp32_pytorch_model.bin",
     "workdir":"/home/sf/data/py_proj/text_generate/",
     "cache_dir":"/home/sf/data/py_proj/hf_models",
     "output_fld":"generated_texts",
-    "output_core_name":"gpt-neo-32l",
+    "output_core_name":"36_3ep",
     "device": "cuda:0",
     "min_length":400,
     "max_length":2400,

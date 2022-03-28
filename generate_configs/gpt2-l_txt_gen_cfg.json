@@ -5,10 +5,10 @@
     "workdir":"/home/sf/data/py_proj/text_generate/",
     "cache_dir":"/home/sf/data/py_proj/hf_models",
     "output_fld":"generated_texts",
-    "output_core_name":"36l_4ep",
+    "output_core_name":"36_4ep",
     "device": "cuda:0",
     "min_length":400,
-    "max_length":1600,
+    "max_length":2400,
     "top_k":"-1",
     "top_p":"0.95",
     "temperature":"1.2",
@@ -22,7 +22,7 @@
 "prompts":{
     "0":{
         "title":"Data Scientist - Recommendation systems",
-        "keywords": "Recommendation systems,Python,neural networks,develop algorithm,predict suctomer interest,TensorFlow,ML frameworks"
+        "keywords": "Recommendation systems,Python,neural networks,develop algorithm,predict customer interest,TensorFlow,PyTorch,ML frameworks"
     },
     
     "1":{
@@ -33,6 +33,11 @@
     "2":{
     "title": "Senior Software Engineer C++",
     "keywords": "FPGA,emdebbed systems,system design,electronics,mechanics,Linux kernel experience,robotics,flying drones,building navigation,strong software development skills"
+    },
+    
+    "3":{
+    "title": "Natural Language Processing (NLP)",
+    "keywords": "NLP,transformers,BERT,GPT,Python,customer satisfaction,analyze customer feedback,topic modeling,working with real-world text corpora,"
     }
 }
 
