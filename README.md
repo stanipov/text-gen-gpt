@@ -97,8 +97,8 @@ Let’s compare results from GPT Neo (1.3B) and GPT2-Large for prompts from topi
 >Knowledge in core areas of statistics: hypothesis testing, sampling & collecting, analyzing distributions, multi-variance analysis, etc. is definitely a plus
 >Expertise with NLP technologies: tokenization, NLU tasks, classification, sentiment analysis tasks, question answering, textual similarity, transformer models, etc.
 >A strong track record of thoughtful leadership in small, collaborative teams
-
-
+>
+>
 >Company - Amazon.com Services LLC
 >Job ID: A115789
 
